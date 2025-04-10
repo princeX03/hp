@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to calculate parity bit (even parity)
+char calculateParity(char *data) {
+    int count = 0;
+    for (int i = 0; i < strlen(data); i++) {
+        if (data[i] == '1')
+            count++;
+    }
+    // Even parity: if count of 1s is even, parity is 0; else 1
+    return (count % 2 == 0) ? '0' : '1';
+}
+
+// Function to simulate sending data with parity
+void sender(char *data, char *frame) {
+    strcpy(frame, data);
+    frame[strlen(data)] = calculateParity(data);
+    frame[strlen(data) + 1] = '\0';
+}
+
+// Function to simulate receiving data and checking for errors
+int receiver(char *frame) {
+    return calculateParity(frame) == '0'; // if 0, no error
+}
+
+int main() {
+    char data[100], frame[101];
+
+    printf("Enter binary data (e.g. 1010101): ");
+    scanf("%s", data);
+
+    sender(data, frame);
+
+    printf("Data sent (with parity bit): %s\n", frame);
+
+    // Simulate transmission (you can flip a bit to test error detection)
+    // frame[2] = (frame[2] == '1') ? '0' : '1'; // Uncomment to simulate error
+
+    if (receiver(frame))
+        printf("Data received successfully. No error detected.\n");
+    else
+        printf("Error detected in received data!\n");
+
+    return 0;
+}
